@@ -1,0 +1,32 @@
+#Place this file in the FLIGHT_CONFIG folder on the usb stick or on the script folder of the raspberry processing
+#If you use custom methods you have to save the methods.py file in the FLIGHT_CONFIG folder on the usb stick
+
+#SCREEN_DATA Must be set if you whant to display a data on the screen
+#SCREEN_DATA_COLUMN|x The column of the data that will be displayed
+#SCREEN_DATA_NAME|name the name of the displayed data
+#SCREEN_DATA_METHOD|method_name the name of the processing method for the displayed data: method(input)=> return output with input=float and output=float
+#MAX_FLIGHT_TIME|x the number of seconds of reception
+#PACKET_NUMBER|x the number of packet for one data line
+#TRIGGER_METHOD|trigger_method_name the method to crop the data method(data)=> return start_index, end_index, first_column_offset with data in list of columns and first_column_offset will substract all the values of the first column (ideal for time)
+#GRAPH|title|x_legend|y_legend|x_unit|y_unit|x_method|y_method|annotate?(1/0)
+#For no data processing, set the x_method or y_method with passX with X the index of the column
+#x_method and y_method = method(data)=> return output with data in list of columns and output the list of values (must be the same length as one of the input column)
+
+#NO_PNG For no png conversion (png conversion may crash or take a long time)
+#EMAIL To enable mail sending
+#EMAIL_ADRESS|name@example.com for each email adress
+
+SCREEN_DATA_COLUMN|0
+SCREEN_DATA_NAME|Temps (ms)
+SCREEN_DATA_METHOD|None
+MAX_FLIGHT_TIME|10
+PACKET_NUMBER|1
+TRIGGER_METHOD|None
+
+GRAPH|x|x|y|na|na|pass0|pass2|1
+GRAPH|random|x|y|na|na|pass0|pass3|1
+GRAPH|random2|x|y|na|na|pass0|pass5|1
+GRAPH|random3|x|y|na|na|pass0|pass4|1
+
+EMAIL
+EMAIL_ADRESS|allairehugo@gmail.com
