@@ -3,6 +3,7 @@ import busio
 import digitalio
 import time
 import os
+import struct
 import adafruit_rfm69
 import errors
 import email_handler
@@ -16,6 +17,7 @@ reception=True
 shutdown=False
 usb_timeout=10
 
+packet_format="<HLfffffffffffff"#1 packet number 1 time and 13 floats
 lcd=lcd_handler.lcd()
 #CONFIG SETUP
 os.system("sudo umount /dev/sda1")
@@ -56,7 +58,7 @@ os.system("mkdir -p DATA")
 i=0
 while os.path.exists("DATA/"+str(i)+"/"):
 	i+=1
-data_number=1
+data_number=i
 
 data_path="DATA/"+str(data_number)+"/"
 graphs_pdf_path=data_path+"GRAPHS/"
@@ -85,11 +87,17 @@ if reception:
 			lcd.recieve_packets()
 			continue
 
-		packet=str(packet, 'ascii')
-		if(packet=="END"):#End condition
-			break
+		try:
+			packet.decode('ascii')
+		except UnicodeDecodeError:#If binary
+			packet=struct.unpack(packet,packet_format)
 		else:
-			packet=packet.split("|")
+			packet=str(packet,'ascii')#If ascii
+			if(str(packet, 'ascii')=="END"):#End condition
+				break
+			else:
+				packet=packet.split("|")
+		#At the end packet is a list of values
 
 		if(int(packet[0])==packet_index):
 			packet_buffer.extend(packet[1:])
@@ -132,7 +140,7 @@ columns_number=len(data[0].split("|"))
 columns=list()
 for i in range(columns_number):#CREATE COLUMN LIST
 	columns.append(list())
-for line in data:
+for line in data[trigger_line:end_trigger_line]:
 	line=line.split("|")
 	for i in range(columns_number):
 		if(i==0):#If column number==0 (time column)
